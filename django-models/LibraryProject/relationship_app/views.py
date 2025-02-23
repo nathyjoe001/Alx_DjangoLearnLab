@@ -18,34 +18,30 @@ class LibraryDetailView(DetailView):
     context_object_name = 'library'
 
 
-#Create the login view
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('list_books')  # Redirect to book list after login
-    else:
-        form = AuthenticationForm()
-    return render(request, 'relationship_app/login.html', {'form': form})
-
-#Create the logout view
-
-def user_logout(request):
-    logout(request)
-    return redirect('login')  # Redirect to login after logout
-
-# Create the registration view
-
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('list_books')  # Redirect to book list after registration
+            return redirect('list_books')  # Redirect to the book list after registration
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
+
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('list_books')  # Redirect to the book list after login
+    else:
+        form = AuthenticationForm()
+    return render(request, 'relationship_app/login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')  # Redirect to the login page after logout
