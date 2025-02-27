@@ -3,7 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views  # Import the RegisterView from views.py
 from .views import list_books, LibraryDetailView, register
-
+from .views import add_book, edit_book, delete_book, book_list
 from .views import admin_view, librarian_view, member_view
 
 
