@@ -1,6 +1,25 @@
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class CustomUser(AbstractUser):
+    """Extending AbstractUser to add custom fields (if any)"""
+    
+    class Meta:
+        permissions = [
+            ("can_create", "Can create records"),
+            ("can_delete", "Can delete records"),
+        ]
+
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -10,7 +29,13 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} by {self.author} ({self.publication_year})"
 
-
+    class Meta:
+        permissions = [
+            ("can_view", "Can view books"),
+            ("can_create", "Can create books"),
+            ("can_edit", "Can edit books"),
+            ("can_delete", "Can delete books"),
+        ]
 
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
@@ -43,3 +68,5 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
+
+

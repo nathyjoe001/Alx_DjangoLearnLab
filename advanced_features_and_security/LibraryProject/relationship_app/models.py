@@ -2,15 +2,25 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.conf import settings
-from users.models import CustomUser
-# Define user roles
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()  # This ensures the correct user model is used
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username
+
+
+#class UserProfile(models.Model):
+    #user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  
+   # bio = models.TextField(blank=True, null=True)
+
+   # def __str__(self):
+  #      return self.user.username
     # Other fields...
 ROLE_CHOICES = [
     ('Admin', 'Admin'),
@@ -25,8 +35,6 @@ class Author(models.Model):
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
     published_date = models.DateField()
     isbn = models.CharField(max_length=13, unique=True)
     summary = models.TextField()
