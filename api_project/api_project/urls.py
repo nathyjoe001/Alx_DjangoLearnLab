@@ -18,6 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
+from rest_framework.authtoken.views import obtain_auth_token
+
 
 # View for the root URL (added this to handle "/")
 def root_view(request):
@@ -27,5 +29,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),  # API URL mappings
     path('', root_view, name='root'),  # Added root URL handler
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
 ]
-

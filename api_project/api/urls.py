@@ -2,6 +2,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import BookViewSet, BookList
 from . import views
+from rest_framework.authtoken.views import obtain_auth_token  # Import the token authentication view
+
+
 
 # Initialize the router
 router = DefaultRouter()
@@ -16,8 +19,7 @@ urlpatterns = [
     path('api/', include(router.urls)),  # Add the 'api/' prefix for the routes handled by the router
     path('example/', views.example_view, name='example'),
     path('other-endpoint/', views.other_view, name='other_endpoint'),
-    
+    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # Add token authentication URL
+
 ]
-
-
 
