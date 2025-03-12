@@ -1,28 +1,24 @@
+
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError  # Correct import for ValidationError from exceptions
 from .models import Author, Book
 
-# BookSerializer should inherit from serializers.ModelSerializer
 class BookSerializer(serializers.ModelSerializer):
-    # Meta class to link this serializer to the Book model
     class Meta:
         model = Book
         fields = ['id', 'title', 'publication_year', 'author']
 
-    # Custom validation method to ensure publication_year is not in the future
+    # Custom validation for publication_year to ensure it's not in the future
     def validate_publication_year(self, value):
-        # Import ValidationError
-        from rest_framework.exceptions import ValidationError
-
-        # Custom validation for the publication year
-        if value > 2025:  # Replace 2025 with the current year or dynamic check
-            raise ValidationError("Publication year cannot be in the future.")
+        if value > 2025:  # You can replace 2025 with the current year or a dynamic check
+            raise serializers.ValidationError("Publication year cannot be in the future.")  # Using 'serializers.ValidationError'
         return value
 
-# AuthorSerializer to include nested BookSerializer
 class AuthorSerializer(serializers.ModelSerializer):
-    books = BookSerializer(many=True, read_only=True)  # Nested BookSerializer
+    books = BookSerializer(many=True, read_only=True)  # Nested serializer for books
 
     class Meta:
         model = Author
         fields = ['id', 'name', 'books']
+
 
