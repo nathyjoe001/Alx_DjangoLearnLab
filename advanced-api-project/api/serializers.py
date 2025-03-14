@@ -7,6 +7,7 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'title', 'publication_year', 'author']
+        author_name = serializers.CharField(source='author.name', read_only=True)
 
     # Custom validation for publication_year to ensure it's not in the future
     def validate_publication_year(self, value):
