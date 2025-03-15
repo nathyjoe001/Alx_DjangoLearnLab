@@ -5,25 +5,14 @@ from .models import Book
 from .serializers import BookSerializer
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter, OrderingFilter   # Correct imports
+from rest_framework.filters import  OrderingFilter, SearchFilter  # Correct imports
 
-
-class SearchFilter(filters.FilterSet):
-    search = filters.CharFilter(field_name='title', lookup_expr='icontains', label='Search by title')
-    
-    class Meta:
-        model = Book
-        fields = ['title', 'author']
 
 
 class BookFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
     author = filters.CharFilter(lookup_expr='icontains')
     publication_year = filters.NumberFilter(field_name='publication_year')
-
-    def filter_search(self, queryset, name, value):
-        return queryset.filter(title__icontains=value)
-
 
     class Meta:
         model = Book
@@ -36,7 +25,7 @@ class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]  # Require authentication for list and create
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = BookFilter
     search_fields = ['title', 'author']
     ordering_fields = ['title', 'publication_year']
