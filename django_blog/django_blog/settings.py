@@ -120,11 +120,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
+
+# settings.py
+
+# Static URL for development
+STATIC_URL = '/static/'
+
+# If you have custom static files that are not inside app folders, you can specify them here.
 STATICFILES_DIRS = [
-    BASE_DIR / "blog/static",
+    BASE_DIR / "blog/static",  # If you have any global static files (outside apps), add here.
 ]
+
+# Where to collect static files for production (for 'collectstatic' command)
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # This is where 'collectstatic' will gather everything
 
 
 # Default primary key field type

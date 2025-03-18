@@ -1,4 +1,8 @@
 <!-- register.html -->
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
