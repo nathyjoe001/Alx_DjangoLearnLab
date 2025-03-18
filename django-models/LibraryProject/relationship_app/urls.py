@@ -6,7 +6,7 @@ from .views import list_books, LibraryDetailView, register
 from .views import add_book, edit_book, delete_book, book_list
 from .views import admin_view, librarian_view, member_view
 
-
+# relationship_app/urls.py
 
 urlpatterns = [
 
