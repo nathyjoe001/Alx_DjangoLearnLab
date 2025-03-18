@@ -55,7 +55,7 @@ ROOT_URLCONF = 'django_blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR /'blog/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,10 +74,15 @@ WSGI_APPLICATION = 'django_blog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',    # This specifies the backend as MySQL
+        'NAME': 'my_blog_db',            # The name of your MySQL database
+        'USER': 'root',                 # Your MySQL username
+        'PASSWORD': 'Ladywise84@',             # Your MySQL password
+        'HOST': 'localhost',                     # Use 'localhost' if it's on your local machine, or the IP address of your server
+        'PORT': '3306',                          # Default MySQL port is 3306
     }
 }
 
