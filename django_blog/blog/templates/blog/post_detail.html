@@ -8,3 +8,29 @@
   <a href="{% url 'blog:post_edit' post.pk %}">Edit</a>
   <a href="{% url 'blog:post_delete' post.pk %}">Delete</a>
 {% endblock %}
+
+<!-- blog/templates/blog/post_detail.html -->
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+
+<h3>Comments:</h3>
+{% for comment in post.comments.all %}
+    <div>
+        <p><strong>{{ comment.author.username }}</strong> said:</p>
+        <p>{{ comment.content }}</p>
+        {% if comment.author == user %}
+            <a href="{% url 'blog:comment_edit' comment.pk %}">Edit</a>
+            <a href="{% url 'blog:comment_delete' comment.pk %}">Delete</a>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<!-- Add Comment Form -->
+{% if user.is_authenticated %}
+    <h3>Add a Comment</h3>
+    <form method="POST" action="{% url 'blog:comment_create' post.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post Comment</button>
+    </form>
+{% endif %}
