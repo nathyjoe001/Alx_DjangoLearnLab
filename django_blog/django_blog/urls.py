@@ -17,10 +17,12 @@ Including another URLconf
 # django_blog/urls.py
 from django.contrib import admin
 from django.urls import path, include  # Import include to add app-level URLs
+from blog.models import Post 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),  # Include the blog app's URLs
-     path('profile/', include('django.contrib.auth.urls')),  # Authentication URLs
+    
+    
 
 ]
