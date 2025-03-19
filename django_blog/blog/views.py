@@ -14,10 +14,6 @@ from .forms import CommentForm
 
 
 
-
-
-
-
 # Create your views here.
 
 # views.py
