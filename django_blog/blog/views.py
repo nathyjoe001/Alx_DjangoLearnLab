@@ -12,11 +12,34 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment
 from .forms import CommentForm
 
+from django.db.models import Q
+from django.shortcuts import render
+from .models import Post, Tag
+
+
+def posts_by_tag(request, tag_name):
+    tag = Tag.objects.get(name=tag_name)
+    posts = tag.posts.all()
+    return render(request, 'blog/posts_by_tag.html', {'posts': posts, 'tag': tag})
+
+
+
+def search_posts(request):
+    query = request.GET.get('q', '')
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    else:
+        posts = Post.objects.all()
+
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
+
 
 
 # Create your views here.
-
-# views.py
 
 
 @login_required
@@ -131,3 +154,36 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('blog:post_detail', kwargs={'pk': self.object.post.pk})
+    
+
+
+# View for creating a new comment
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.author = request.user  # Set the author of the comment to the logged-in user
+            comment.post = post  # Associate the comment with the post
+            comment.save()  # Save the comment
+            return redirect('post_detail', pk=post.id)  # Redirect to the post detail page (ensure this URL exists)
+    else:
+        form = CommentForm()
+
+    return render(request, 'blog/comment_form.html', {'form': form, 'post': post})
+
+def update_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()  # Save the updated comment
+            return redirect('post_detail', pk=comment.post.id)  # Redirect to the post detail page
+    else:
+        form = CommentForm(instance=comment)  # Pre-fill the form with the current comment content
+
+    return render(request, 'blog/comment_form.html', {'form': form, 'comment': comment})
