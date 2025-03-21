@@ -18,6 +18,18 @@ from .models import Post
 from taggit.models import Tag
 
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_slug = self.kwargs['tag_slug']
+        tag = Tag.objects.get(slug=tag_slug)
+        return Post.objects.filter(tags=tag)
+
+
+
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     return render(request, 'blog/post_detail.html', {'post': post})

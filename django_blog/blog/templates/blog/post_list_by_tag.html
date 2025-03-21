@@ -1,0 +1,7 @@
+<!-- blog/templates/blog/post_list_by_tag.html -->
+<h1>Posts Tagged with "{{ tag_slug }}"</h1>
+<ul>
+    {% for post in posts %}
+        <li><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
