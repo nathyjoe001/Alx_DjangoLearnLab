@@ -14,13 +14,25 @@ from .forms import CommentForm
 
 from django.db.models import Q
 from django.shortcuts import render
-from .models import Post, Tag
+from .models import Post
+from taggit.models import Tag
 
 
+def post_detail(request, id):
+    post = get_object_or_404(Post, id=id)
+    return render(request, 'blog/post_detail.html', {'post': post})
+
+
+# View to display posts that belong to a specific tag
 def posts_by_tag(request, tag_name):
-    tag = Tag.objects.get(name=tag_name)
-    posts = tag.posts.all()
+    # Get the tag using django-taggit's Tag model
+    tag = get_object_or_404(Tag, name=tag_name)
+    
+    # Use filter to get posts with the specified tag
+    posts = Post.objects.filter(tags__name=tag_name)  # 'tags__name' is the key to filter by tag name
+    
     return render(request, 'blog/posts_by_tag.html', {'posts': posts, 'tag': tag})
+
 
 
 
