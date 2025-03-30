@@ -4,6 +4,15 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import NotFound
+from rest_framework import status, generics, permissions
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from .models import Post, Like
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+
+
 
 User = get_user_model()
 
@@ -49,3 +58,6 @@ class UserFeedView(generics.ListAPIView):
 
         # Filter posts to show only from users that the current user is following
         return Post.objects.filter(author__in=following_users).order_by('-created_at')  # Ordered by creation date, most recent first
+
+
+
