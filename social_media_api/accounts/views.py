@@ -35,18 +35,27 @@ class LoginView(views.APIView):
 
 # accounts/views.py
 
+
 User = get_user_model()
 
 class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        # Retrieve all users (this line includes CustomUser.objects.all())
+        all_users = User.objects.all()
+
         # Retrieve user to follow by ID provided in the request
         user_to_follow = User.objects.get(id=request.data['user_id'])
         user = request.user
 
+        # Ensure user is not following themselves
         if user == user_to_follow:
             return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Ensure the user exists in the database and can be followed
+        if user_to_follow not in all_users:
+            return Response({"detail": "User to follow does not exist."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Add the user_to_follow to the 'following' ManyToMany field of the authenticated user
         user.following.add(user_to_follow)
@@ -59,12 +68,20 @@ class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        # Retrieve all users (this line includes CustomUser.objects.all())
+        all_users = User.objects.all()
+
         # Retrieve user to unfollow by ID provided in the request
         user_to_unfollow = User.objects.get(id=request.data['user_id'])
         user = request.user
 
+        # Ensure user is not unfollowing themselves
         if user == user_to_unfollow:
             return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Ensure the user exists in the database and can be unfollowed
+        if user_to_unfollow not in all_users:
+            return Response({"detail": "User to unfollow does not exist."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Remove the user_to_unfollow from the 'following' ManyToMany field of the authenticated user
         user.following.remove(user_to_unfollow)
