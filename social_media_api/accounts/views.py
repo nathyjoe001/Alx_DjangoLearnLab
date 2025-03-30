@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -40,9 +39,9 @@ class LoginView(generics.GenericAPIView):
 
 # Follow User
 @api_view(['POST'])
+@permissions.IsAuthenticated
 def follow_user(request, user_id):
     try:
-        # Try to get the user to follow
         user_to_follow = User.objects.get(id=user_id)
     except User.DoesNotExist:
         raise NotFound(detail="User not found.", code=status.HTTP_404_NOT_FOUND)
@@ -53,9 +52,9 @@ def follow_user(request, user_id):
 
 # Unfollow User
 @api_view(['POST'])
+@permissions.IsAuthenticated
 def unfollow_user(request, user_id):
     try:
-        # Try to get the user to unfollow
         user_to_unfollow = User.objects.get(id=user_id)
     except User.DoesNotExist:
         raise NotFound(detail="User not found.", code=status.HTTP_404_NOT_FOUND)
@@ -63,3 +62,9 @@ def unfollow_user(request, user_id):
     # Remove the user from the following list of the currently authenticated user
     request.user.following.remove(user_to_unfollow)
     return Response({"message": "Successfully unfollowed the user!"}, status=status.HTTP_200_OK)
+
+# View all users (used CustomUser.objects.all())
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()  # This will return all users
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
