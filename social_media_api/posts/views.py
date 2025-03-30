@@ -7,7 +7,8 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import permissions
 from django_filters import rest_framework as filters
-
+from rest_framework import generics
+from django.db.models import Q
 
 
 
@@ -37,3 +38,17 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+# posts/views.py
+
+
+class UserFeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Get the current user's followed users
+        followed_users = self.request.user.following.all()
+        
+        # Get posts from users that the current user follows
+        return Post.objects.filter(author__in=followed_users).order_by('-created_at')
