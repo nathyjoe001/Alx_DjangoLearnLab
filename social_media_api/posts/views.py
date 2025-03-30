@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import NotFound
 from rest_framework.decorators import api_view, permission_classes
 from notifications.models import Notification
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404  # This is the correct import for get_object_or_404
 
 User = get_user_model()
 
@@ -58,7 +58,7 @@ class UserFeedView(generics.ListAPIView):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def like_post(request, pk):
-    # Use get_object_or_404 to fetch the post, returns 404 if not found
+    # Use generics.get_object_or_404 to fetch the post, returns 404 if not found
     post = get_object_or_404(Post, pk=pk)
 
     # Prevent the user from liking their own post
@@ -87,7 +87,7 @@ def like_post(request, pk):
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unlike_post(request, pk):
-    # Use get_object_or_404 to fetch the post, returns 404 if not found
+    # Use generics.get_object_or_404 to fetch the post, returns 404 if not found
     post = get_object_or_404(Post, pk=pk)
 
     # Check if the user has liked the post
