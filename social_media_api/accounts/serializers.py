@@ -6,14 +6,15 @@ from rest_framework.authtoken.models import Token
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)  # Ensures password is not returned in responses
+    # Use CharField for the password field, write_only to not return it in responses
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'bio', 'profile_picture']
 
     def create(self, validated_data):
-        # Create a user with the provided data
+        # Creating a user using create_user method
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -22,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             profile_picture=validated_data.get('profile_picture', None)
         )
         
-        # Create the auth token for the user after registration
+        # Create and return the auth token for the user
         Token.objects.create(user=user)
         
         return user
