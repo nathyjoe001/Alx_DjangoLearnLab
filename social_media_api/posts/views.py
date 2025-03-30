@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import NotFound
 from rest_framework.decorators import api_view, permission_classes
 from notifications.models import Notification
-from django.shortcuts import get_object_or_404  # This is the correct import for get_object_or_404
+from django.shortcuts import get_object_or_404  # Import the correct get_object_or_404 method
 
 User = get_user_model()
 
