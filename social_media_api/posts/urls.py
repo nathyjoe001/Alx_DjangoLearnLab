@@ -1,15 +1,21 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import PostViewSet, CommentViewSet
-from .views import UserFeedView
+from . import views
 
+# Initialize the router
 router = DefaultRouter()
 router.register(r'posts', PostViewSet)
 router.register(r'comments', CommentViewSet)
 
+# Define the additional routes for liking/unliking and user feed
 urlpatterns = [
-    path('', include(router.urls)),
-    path('feed/', UserFeedView.as_view(), name='user_feed'),
-]
+    # URLs for liking and unliking posts
+    path('posts/<int:pk>/like/', views.like_post, name='like-post'),
+    path('posts/<int:pk>/unlike/', views.unlike_post, name='unlike-post'),
 
-# posts/urls.py
+    # Feed URL (Post from followed users)
+    path('feed/', views.UserFeedView.as_view(), name='user-feed'),
+
+    # Add router URLs to urlpatterns
+] + router.urls
