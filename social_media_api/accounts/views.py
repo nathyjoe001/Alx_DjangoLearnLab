@@ -6,6 +6,9 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
 
 User = get_user_model()
 
@@ -24,7 +27,10 @@ class RegisterView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Login User
+
+
 class LoginView(generics.GenericAPIView):
+    
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -39,7 +45,8 @@ class LoginView(generics.GenericAPIView):
 
 # Follow User
 @api_view(['POST'])
-@permissions.IsAuthenticated
+#@permissions.IsAuthenticated
+@permission_classes([IsAuthenticated])
 def follow_user(request, user_id):
     try:
         user_to_follow = User.objects.get(id=user_id)
@@ -52,7 +59,8 @@ def follow_user(request, user_id):
 
 # Unfollow User
 @api_view(['POST'])
-@permissions.IsAuthenticated
+@permission_classes([IsAuthenticated])
+#@permissions.IsAuthenticated
 def unfollow_user(request, user_id):
     try:
         user_to_unfollow = User.objects.get(id=user_id)

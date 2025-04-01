@@ -1,4 +1,4 @@
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, viewsets
 from rest_framework.response import Response
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
@@ -9,6 +9,17 @@ from notifications.models import Notification
 from django.shortcuts import get_object_or_404  # This is the proper import for get_object_or_404
 
 User = get_user_model()
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 # List and Create Posts
 class PostListCreateView(generics.ListCreateAPIView):
@@ -42,9 +53,12 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 # Feed View (Posts from followed users)
+
+
 class UserFeedView(generics.ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
+   
 
     def get_queryset(self):
         # Get the list of users the current user is following
